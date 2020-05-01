@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "742746327185",
+    "firebase_url": "https://cloudproject-b3755.firebaseio.com",
+    "project_id": "cloudproject-b3755",
+    "storage_bucket": "cloudproject-b3755.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:742746327185:android:944b21ee492f6e7f5f5730",
+        "android_client_info": {
+          "package_name": "com.Harshul.cloudproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "742746327185-s8kenje6lds1nthm3vo5q64p4papesq5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEkPkI5pqcyRCUNf7KpRG_IRQwo5RFFDU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "742746327185-s8kenje6lds1nthm3vo5q64p4papesq5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
