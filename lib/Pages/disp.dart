@@ -1,9 +1,8 @@
-import 'dart:io';
+
 import 'package:cloudproject/firebase/function.dart';
 import 'package:flutter/material.dart';
 import 'package:cloudproject/Dats/file.dart';
 import 'package:cloudproject/Dats/titles.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 final _firestore = Firestore.instance;
 String ttl = '';
@@ -11,7 +10,7 @@ String Val='';
 String Flag='';
 String nto = '';
 String user;
-
+String changeCheck = '';
 class Display extends StatefulWidget {
   @override
   _DisplayState createState() => _DisplayState();
@@ -34,8 +33,8 @@ class _DisplayState extends State<Display> {
       }
     }
   }
-  void setTitle() async{
-    await NoteFile.saveToFile(myController.text,val.text);
+  void setTitle(String title) async{
+    await NoteFile.saveToFile(myController.text,title);
     await Titles.saveToFile(ttl);
   }
   void getCurr()async{
@@ -50,130 +49,68 @@ class _DisplayState extends State<Display> {
   void hell()async{
     ttl=await Titles.readFromFile();
   }
-  makeAlertDialog(BuildContext context){
-    return showDialog(
-        context:context,
-        builder:(context){
-          return  AlertDialog(
-            backgroundColor: Colors.yellow,
-            actions: <Widget>[
 
-              FlatButton.icon(
-                label: Text('Save in new file',
-                  style: TextStyle(
-                      fontSize: 25,
-                      color: Colors.black
-                  ),
-                ),
-                icon: Icon(Icons.save,
-                  size:35,
-                  color: Colors.black,
-                ),
-                onPressed: () {
-                  hell();
-
-                  setState(() {
-                    createAlertDialog(context);
-                   },
-                  );
-                  //Navigator.of(context).pop();
-                },
-              ),
-              FlatButton.icon(
-                  label: Text('Save',
-                    style:TextStyle(
-                      fontSize: 25,
-                      color: Colors.black,
-                    ),
-                  ),
-                  icon: Icon(Icons.save,
-                    size:35,
-                    color: Colors.black,
-                  ),
-                  onPressed: () async{
-                    String ID;
-                    int f=0;
-                    saveDat();
-                    if(user!='OFFLINE'){
-                      await for(var snapshot in _firestore.collection(user).snapshots()){
-                        for(DocumentSnapshot message in snapshot.documents){
-                          if(message.data['Title']==Flag){
-                            ID=message.documentID;
-                            f=1;
-                          }
-                          if(f==1)
-                            break;
-                        }
-                        if(f==1)
-                          break;
-                      }
-                      print(ID);
-                      Firestore.instance.collection(user).document(ID).updateData({'Note':myController.text});
-                    }
-
-                    Navigator.of(context).pop();
-                  }),
-
-              FlatButton.icon(
-                label: Text('Home',
-                  style:TextStyle(
-                    fontSize: 25,
-                    color: Colors.black
-                  ),
-                ),
-                icon: Icon(Icons.home,
-                  size:35,
-                  color:Colors.black,
-                ),
-                onPressed: () {
-                  //Navigator.of(context).pop();
-                  Navigator.pushNamed(context, '/home',);
-                },
-              ),
-            ],
-          );
-        }
-    );
-  }
   createAlertDialog(BuildContext context) {
     return showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('File name:'),
+          title: Text('Do you want to save the changes'),
           backgroundColor: Colors.yellow[400],
-          content: TextField(
-              controller: val,
-              style:TextStyle(
-                fontSize: 30,
-              )
-            ),
           actions: <Widget>[
-            MaterialButton(
-              child: Text('Submit',
-                style:TextStyle(
-                    color:Colors.blue,
-                    fontSize: 20
-                ),
-              ),
-              onPressed: () {
-                setTitle();
-                setState(()  {
-                  Val = val.text;
-                  if(ttl==null)
-                    ttl=Val;
-                  else
-                    ttl=ttl+' '+Val;
-                  Titles.saveToFile(ttl);
-                  NoteFile.saveToFile(myController.text, Val);
-                  if(user!='OFFLINE')
-                  FireBase.addFireBase(myController.text,Val);
-                },
-                );
-                Navigator.of(context).pop();
+            FlatButton(
+              child: Text('Yes'),
+              onPressed: () async{
+                if(Flag=='-'){
+                  hell();
+                  setTitle(myTitle.text);
+                  setState(()  {
+                    Val = myTitle.text;
+                    if(ttl==null)
+                      ttl=Val;
+                    else
+                      ttl=ttl+' '+Val;
 
+                    Titles.saveToFile(ttl);
+                    NoteFile.saveToFile(myController.text, Val);
+                    if(user!='OFFLINE')
+                      FireBase.addFireBase(myController.text,Val);
+                  },
+                  );
+                  Navigator.of(context).pop();
+                }
+                else{
+                  String ID;
+                  int f = 0;
+                  saveDat();
+                  if (user != 'OFFLINE') {
+                    await for (var snapshot in _firestore.collection(user)
+                        .snapshots()) {
+                      for (DocumentSnapshot message in snapshot.documents) {
+                        if (message.data['Title'] == Flag) {
+                          ID = message.documentID;
+                          f = 1;
+                        }
+                        if (f == 1)
+                          break;
+                      }
+                      if (f == 1)
+                        break;
+                    }
+                    print(ID);
+                    Firestore.instance.collection(user).document(ID).updateData(
+                        {'Note': myController.text});
+                  }
+                  Navigator.of(context).pop();
+                }
               },
-            )
+            ),
+            FlatButton(
+              child:Text('No'),
+              onPressed: (){
+                Navigator.of(context).pop();
+              },
+            ),
           ],
         );
       },
@@ -184,8 +121,12 @@ class _DisplayState extends State<Display> {
     await NoteFile.readFromFile(Flag).then((value) {
 
       setState(() {
-        myController.text = value;
-        nto = myController.text;
+
+        if(Flag!='-') {
+          myController.text = value;
+          myTitle.text = Flag;
+        }
+        changeCheck = value;
       });
       print(nto);
     });
@@ -200,6 +141,7 @@ class _DisplayState extends State<Display> {
 
 
   final myController = TextEditingController();
+  final myTitle = TextEditingController();
 
   Map Title={};
   int x=0;
@@ -219,10 +161,20 @@ class _DisplayState extends State<Display> {
       getData();
       x+=1;
     }
-
     return Scaffold(
       backgroundColor: Colors.grey[400],
       appBar:AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          color: Colors.black,
+          onPressed: () async{
+              if(myController.text!=changeCheck && myTitle.text!=''){
+               await createAlertDialog(context);
+              }
+              Navigator.pushNamed(context, '/home');
+
+          }
+        ),
         automaticallyImplyLeading: false,
         title: Text('Edit your $Flag note',
           style:TextStyle(
@@ -230,26 +182,40 @@ class _DisplayState extends State<Display> {
             color:Colors.black,
           ),
         ),
-        actions: <Widget>[
-          IconButton(
-              icon:Icon(Icons.more_vert,
-                color: Colors.black,
-              ),
-              onPressed:(){
-                makeAlertDialog(context);
-              }
-          )
-        ],
+
         backgroundColor: Colors.yellow[600],
       ) ,
-      body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
+      body: WillPopScope(
+        // ignore: missing_return
+        onWillPop: () async{
+          if(myController.text!=changeCheck && myTitle.text!=''){
+            await createAlertDialog(context);
+          }
+          Navigator.popAndPushNamed(context, '/home');
+        },
+        child: SafeArea(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText: 'Title',
+                    ),
+                    style:TextStyle(
+                      fontSize:30,
+                    ),
+                    controller: myTitle,
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
+                  ),
+                ),
+              ),
 
-
-            Expanded(
-              child: Padding(
+              Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: SingleChildScrollView(
                   scrollDirection: Axis.vertical,
@@ -263,8 +229,8 @@ class _DisplayState extends State<Display> {
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

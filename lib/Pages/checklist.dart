@@ -79,16 +79,18 @@ class _CheckListState extends State<CheckList> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Container(
-              height:520,
-              decoration: BoxDecoration(
-                color: Colors.yellow,
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20),bottomRight: Radius.circular(20),bottomLeft: Radius.circular(20))
-              ),
-              child: Column(
-                children: <Widget>[
-                  TodoStream(),
-                ],
+            Expanded(
+              child: Container(
+                height:520,
+                decoration: BoxDecoration(
+                  color: Colors.yellow,
+                  borderRadius: BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20),bottomRight: Radius.circular(20),bottomLeft: Radius.circular(20))
+                ),
+                child: Column(
+                  children: <Widget>[
+                    TodoStream(),
+                  ],
+                ),
               ),
             ),
           ],
@@ -164,46 +166,46 @@ class Todolist extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Material(
-          color: Colors.black,
-          borderRadius: BorderRadius.circular(10),
-          child: Row(
-            children: <Widget>[
-              Checkbox(
-                value:status,
-                checkColor: Colors.black,
-                activeColor: Colors.yellow,
+      child: Expanded(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Material(
+            color: Colors.black,
+            borderRadius: BorderRadius.circular(10),
+            child: Row(
+              children: <Widget>[
+                Checkbox(
+                  value:status,
+                  checkColor: Colors.black,
+                  activeColor: Colors.yellow,
 
-                onChanged: (value) async{
-                  if(status==true){
-                    status=false;
-                  }
-                  else
-                    status=true;
-                  print(ID);
-                  print(status);
-                  final user = await FireBase.getCurrentUser();
-                  TodoFireBase.updateStatus(user,ID,status);
-                },
-              ),
-              Expanded(
-                  child: Text('$todo',
-                  style:TextStyle(
-                     fontSize: 30,
-                     color: Colors.white,
-                  ),
+                  onChanged: (value) async{
+                    if(status==true){
+                      status=false;
+                    }
+                    else
+                      status=true;
+                    print(ID);
+                    print(status);
+                    final user = await FireBase.getCurrentUser();
+                    TodoFireBase.updateStatus(user,ID,status);
+                  },
                 ),
-              ),
-             IconButton(
-                icon:Icon(Icons.delete),
-                color: Colors.yellow,
-                onPressed: ()async{
-                   TodoFireBase.deleteTodo(user, ID);
-                },
-              ),
-            ],
+                Text('$todo',
+                style:TextStyle(
+                   fontSize: 30,
+                   color: Colors.white,
+                ),
+                  ),
+               IconButton(
+                  icon:Icon(Icons.delete),
+                  color: Colors.yellow,
+                  onPressed: ()async{
+                     TodoFireBase.deleteTodo(user, ID);
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -4,7 +4,7 @@ import 'package:cloudproject/Dats/file.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloudproject/firebase/function.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'dart:io' as io;
+
 //import 'package:animated_text_kit/animated_text_kit.dart';
 final _firestore = Firestore.instance;
 final _auth  = FirebaseAuth.instance;
@@ -148,7 +148,7 @@ class _HomeState extends State<Home> {
           icon:Icon(Icons.close),
            onPressed: (){
             _auth.signOut();
-            Navigator.pushNamed(context, '/Auth');
+            Navigator.popAndPushNamed(context, '/Auth');
            },
          ),
          IconButton(
@@ -177,7 +177,7 @@ class _HomeState extends State<Home> {
         itemCount:filenm.length,
         itemBuilder:(context, index)
      {
-       int num=index+1;
+
       return Padding(
         padding: const EdgeInsets.all(20.0),
         child: Container(
@@ -226,7 +226,7 @@ class _HomeState extends State<Home> {
                 setState(() {
                   flag=filenm[index];
                 });
-                Navigator.pushNamed(context, '/disp',arguments:{
+                Navigator.popAndPushNamed(context, '/disp',arguments:{
                   'title':'$flag'
                   }
                 );
@@ -263,7 +263,7 @@ class _HomeState extends State<Home> {
         ),
         backgroundColor: Colors.yellow[500],
         onPressed:(){
-            Navigator.pushNamed(context, '/disp',arguments:{
+            Navigator.popAndPushNamed(context, '/disp',arguments:{
             'title':'-',
           });
         },
