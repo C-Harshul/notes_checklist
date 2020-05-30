@@ -47,6 +47,7 @@ class _DispState extends State<Disp> {
             onPressed: () {
               FirebaseAuth.instance.signOut();
               Navigator.popAndPushNamed(context,'/Auth');
+
             },
           ),
           IconButton(
