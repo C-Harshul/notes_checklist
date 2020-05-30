@@ -37,6 +37,9 @@ class _CheckListState extends State<CheckList> {
                   Navigator.of(context).pop();
                 });
                 TodoFireBase.addFireBase(text,false);
+                setState(() {
+                  todo.text="";
+                });
               },
             ),
           ],
@@ -165,46 +168,47 @@ class Todolist extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Expanded(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Material(
-            color: Colors.black,
-            borderRadius: BorderRadius.circular(10),
-            child: Row(
-              children: <Widget>[
-                Checkbox(
-                  value:status,
-                  checkColor: Colors.black,
-                  activeColor: Colors.yellow,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Material(
+          color: Colors.black,
+          borderRadius: BorderRadius.circular(10),
+          child: Row(
+            children: <Widget>[
+              Checkbox(
+                value:status,
+                checkColor: Colors.black,
+                activeColor: Colors.yellow,
 
-                  onChanged: (value) async{
-                    if(status==true){
-                      status=false;
-                    }
-                    else
-                      status=true;
-                    print(ID);
-                    print(status);
-                    final user = await FireBase.getCurrentUser();
-                    TodoFireBase.updateStatus(user,ID,status);
-                  },
-                ),
-                Text('$todo',
+                onChanged: (value) async{
+                  if(status==true){
+                    status=false;
+                  }
+                  else
+                    status=true;
+                  print(ID);
+                  print(status);
+                  final user = await FireBase.getCurrentUser();
+                  TodoFireBase.updateStatus(user,ID,status);
+                },
+              ),
+              Expanded(
+                child: Text('$todo',
                   style:TextStyle(
+                    decoration:status? TextDecoration.lineThrough:null,
                     fontSize: 30,
                     color: Colors.white,
                   ),
                 ),
-                IconButton(
-                  icon:Icon(Icons.delete),
-                  color: Colors.yellow,
-                  onPressed: ()async{
-                    TodoFireBase.deleteTodo(user, ID);
-                  },
-                ),
-              ],
-            ),
+              ),
+              IconButton(
+                icon:Icon(Icons.delete),
+                color: Colors.yellow,
+                onPressed: ()async{
+                  TodoFireBase.deleteTodo(user, ID);
+                },
+              ),
+            ],
           ),
         ),
       ),

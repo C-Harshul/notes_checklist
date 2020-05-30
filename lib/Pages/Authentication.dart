@@ -1,90 +1,81 @@
-import 'package:flutter/material.dart';
 
+import 'package:flutter/material.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:cloudproject/components/Rounded_Button.dart';
 class Authenticate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        iconTheme: IconThemeData(
-          color: Colors.black,
-        ),
-        backgroundColor: Colors.yellow,
-        title: Center(
-          child: Text('HUB',
-          style:TextStyle(
-             fontSize:40,
-             color: Colors.black,
-            ),
-          ),
-        ),
-      ),
+
       body:Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Hero(
-            tag:'logo',
-            child: Container(
-              child:Image.asset('back/note.jpg'),
-              height: 200,
-            ),
+          Row(
+
+            children: <Widget>[
+              Center(
+                child: Hero(
+                  tag:'logo',
+                  child: Container(
+                    child:Padding(
+                      padding: const EdgeInsets.fromLTRB(40,0,0,0),
+                      child: Image.asset('back/note.jpg'),
+                    ),
+                    height: 100,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(0,0,10,0),
+                  child: TypewriterAnimatedTextKit(
+                    text: ['Notes_App'
+                    ],
+                    alignment: AlignmentDirectional.topStart,
+                    textStyle: TextStyle(
+                      fontFamily: 'Caveat',
+                      fontSize: 52,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              )
+            ],
           ),
           SizedBox(
             height: 60,
           ),
           Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: RaisedButton(
-              color: Colors.yellow,
-              child:Center(
-                child: Text('Login',
-                style:TextStyle(
-                  fontSize:20,
-                  color: Colors.black
-                  ),
-                ),
-              ),
+            padding: const EdgeInsets.fromLTRB(15,0,15,0),
+            child: RoundedButton(
+              colour: Colors.yellow,
+              title: 'Login',
               onPressed: (){
                 Navigator.pushNamed(context, '/login');
               },
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: RaisedButton(
-              color: Colors.yellow,
+            padding: const EdgeInsets.fromLTRB(15,0,15,0),
+            child: RoundedButton(
+              colour: Colors.yellow,
+              title:'Register',
               onPressed: (){
                 Navigator.pushNamed(context, '/register');
               },
-              child:Center(
-                child:Text('Register',
-                style:TextStyle(
-                   fontSize:20,
-                  color: Colors.black
-                  ),
-                ),
-              ),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: RaisedButton(
-              color:Colors.yellow,
+            padding: const EdgeInsets.fromLTRB(15,0,15,0),
+            child: RoundedButton(
+              title: 'Offline',
+              colour:Colors.yellow,
               onPressed: (){
-
-                Navigator.popAndPushNamed(context, '/dispcorr');
+                Navigator.pushNamed(context, '/OfflineHome');
               },
-              child:Center(
-                child:Text('Offline',
-                  style:TextStyle(
-                      fontSize:20,
-                      color: Colors.black
-                  ),
-                ),
-              ),
             ),
           ),
         ],

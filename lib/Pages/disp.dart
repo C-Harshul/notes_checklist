@@ -1,3 +1,4 @@
+
 import 'package:cloudproject/firebase/function.dart';
 import 'package:flutter/material.dart';
 import 'package:cloudproject/Dats/file.dart';
@@ -11,9 +12,7 @@ String nto = '';
 String user;
 String changeCheck = '';
 class Display extends StatefulWidget {
-
   @override
-
   _DisplayState createState() => _DisplayState();
 }
 class _DisplayState extends State<Display> {
@@ -98,7 +97,7 @@ class _DisplayState extends State<Display> {
                     if(ttl==null)
                       ttl=Val;
                     else
-                      ttl=ttl+' '+Val;
+                      ttl=ttl+'^'+Val;
                      Titles.saveToFile(ttl);
                      NoteFile.saveToFile(myController.text, Val);
                     if(user!='OFFLINE')
@@ -127,7 +126,7 @@ class _DisplayState extends State<Display> {
                       if (f == 1)
                         break;
                     }
-                    print(ID);
+                    print(ID+"-----------------------------------------------");
                     Firestore.instance.collection(user).document(ID).updateData(
                         {'Note': myController.text});
                   }
@@ -157,53 +156,57 @@ class _DisplayState extends State<Display> {
   int x=0;
   @override
   Widget build(BuildContext context) {
-    if(user==null){
+    if (user == null) {
       setState(() {
-        user='OFFLINE';
+        user = 'OFFLINE';
       });
     }
 
-    Title=Title.isNotEmpty?Title:ModalRoute.of(context).settings.arguments;
+    Title = Title.isNotEmpty ? Title : ModalRoute
+        .of(context)
+        .settings
+        .arguments;
     setState(() {
-      Flag=Title['title'];
+      Flag = Title['title'];
     });
-    if(x==0) {
+    if (x == 0) {
       getData();
-      x+=1;
+      x += 1;
     }
     return Scaffold(
       backgroundColor: Colors.grey[400],
-      appBar:AppBar(
+      appBar: AppBar(
         leading: IconButton(
             icon: Icon(Icons.arrow_back),
             color: Colors.black,
-            onPressed: () async{
-              if(myController.text!=changeCheck && myTitle.text!=''){
+            onPressed: () async {
+              if (myController.text != changeCheck && myTitle.text != '') {
                 await createAlertDialog(context);
               }
-              Navigator.popAndPushNamed(context, '/dispcorr');
-
+              if(user=="OFFLINE")
+                Navigator.popAndPushNamed(context, "/OfflineHome");
+              else
+                Navigator.of(context).pop();
             }
         ),
         automaticallyImplyLeading: false,
         title: Text('Edit your $Flag note',
-          style:TextStyle(
-            fontSize:25,
-            color:Colors.black,
+          style: TextStyle(
+            fontSize: 25,
+            color: Colors.black,
           ),
         ),
 
         backgroundColor: Colors.yellow[600],
-      ) ,
+      ),
       body: WillPopScope(
         // ignore: missing_return
-        onWillPop: () async{
-          if(myController.text!=changeCheck && myTitle.text!=''){
+        onWillPop: () async {
+          if (myController.text != changeCheck && myTitle.text != '') {
             print(myController.text);
             await createAlertDialog(context);
           }
-          Navigator.popAndPushNamed(context, '/dispcorr');
-
+          Navigator.pop(context);
         },
         child: SafeArea(
           child: Column(
@@ -222,13 +225,14 @@ class _DisplayState extends State<Display> {
                       textAlign: TextAlign.center,
                       decoration: InputDecoration(
                           hintText: 'Title',
+                          border: InputBorder.none,
                           hintStyle: TextStyle(
                             color: Colors.grey,
                           )
                       ),
-                      style:TextStyle(
-                        fontSize:30,
-                        color:Colors.white,
+                      style: TextStyle(
+                        fontSize: 30,
+                        color: Colors.white,
                       ),
                       controller: myTitle,
                       keyboardType: TextInputType.multiline,
@@ -238,17 +242,31 @@ class _DisplayState extends State<Display> {
                 ),
               ),
 
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: TextField(
-                    style:TextStyle(
-                      fontSize:30,
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.yellow,
+                      borderRadius: BorderRadius.circular(20),
                     ),
-                    controller: myController,
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null,
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
+                        child: TextField(
+                          decoration:InputDecoration(
+                            border:InputBorder.none
+                          ),
+                          style: TextStyle(
+                            fontSize: 30,
+                          ),
+                          controller: myController,
+                          keyboardType: TextInputType.multiline,
+                          maxLines: null,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ),

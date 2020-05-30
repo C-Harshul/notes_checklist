@@ -1,7 +1,8 @@
+
 import 'package:path_provider/path_provider.dart';
 import  'dart:io';
 import'dart:async';
-import 'file:///C:/Users/Harshul%20C/AndroidStudioProjects/cloud_project/lib/firebase/function.dart';
+import 'package:cloudproject/firebase/function.dart';
 
 class NoteFile {
 

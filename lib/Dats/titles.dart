@@ -1,3 +1,4 @@
+
 import 'package:path_provider/path_provider.dart';
 import  'dart:io';
 import'dart:async';
@@ -25,7 +26,7 @@ class Titles{
       else{
         return File('$path/$user.txt');
       }
-    }catch(e){
+     }catch(e){
       print('Error 1');
     }
   }
@@ -51,3 +52,4 @@ class Titles{
     }
   }
 }
+

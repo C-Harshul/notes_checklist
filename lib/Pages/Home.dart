@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'file:///C:/Users/Harshul%20C/AndroidStudioProjects/cloud_project/lib/Dats/titles.dart';
 import 'package:cloudproject/Dats/file.dart';
@@ -14,24 +15,26 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  String temp='';
-  String Val='';
-  String ttl='';
-  List<String> filenm=[];
-  List<String> filedel=[];
+  String temp = '';
+  String Val = '';
+  String ttl = '';
+  List<String> filenm = [];
+  List<String> filedel = [];
   String user;
+
   bool isPresent(String title) {
     return filenm.contains(title);
   }
-  void gettitle()async{
-    ttl=await Titles.readFromFile();
+
+  void gettitle() async {
+    ttl = await Titles.readFromFile();
   }
 
-  void noteStream()async{
-    await for(var snapshot in _firestore.collection(user).snapshots()){
-      for(var message in  snapshot.documents){
-        final note=await NoteFile.readFromFile(message.data['Title']);
-        if(!isPresent(message.data['Title'])) {
+  void noteStream() async {
+    await for (var snapshot in _firestore.collection(user).snapshots()) {
+      for (var message in snapshot.documents) {
+        final note = await NoteFile.readFromFile(message.data['Title']);
+        if (!isPresent(message.data['Title'])) {
           print(filenm);
           setState(() {
             filenm.add(message.data['Title']);
@@ -42,98 +45,96 @@ class _HomeState extends State<Home> {
             else
               ttl = ttl + ' ' + message.data['Title'];
             Titles.saveToFile(ttl);
-           });
-         }
-          if(message.data['Note']!=note){
-            NoteFile.saveToFile(message.data['Note'], message.data['Title']);
-            print('updated');
-          }
-
+          });
+        }
+        if (message.data['Note'] != note) {
+          NoteFile.saveToFile(message.data['Note'], message.data['Title']);
+          print('updated');
+        }
       }
     }
   }
+
   @override
-  void deleteNote(String delnote) async{
+  void deleteNote(String delnote) async {
     await Titles.readFromFile().then((names) {
       print(names);
       setState(() {
-        Val= names;
-        Val=Val+' ';
+        Val = names;
+        Val = Val + ' ';
       });
     });
-    for(int i=0;i<Val.length;++i){
-      if(Val[i]==' ')
-      {
+    for (int i = 0; i < Val.length; ++i) {
+      if (Val[i] == ' ') {
         setState(() {
           filedel.add(temp);
-          temp='';
+          temp = '';
         });
       }
-      else{
+      else {
         setState(() {
-          temp=temp+Val[i];
+          temp = temp + Val[i];
         });
       }
-
     }
 
     filenm.remove(delnote);
-    String del=filenm.join(' ');
-    print (del);
+    String del = filenm.join(' ');
+    print(del);
     Titles.saveToFile(del);
-
   }
-  void getTitle() async{
+
+  void getTitle() async {
     await Titles.readFromFile().then((names) {
       print(names);
       setState(() {
-        Val= names;
-        Val=Val+' ';
+        Val = names;
+        Val = Val + '^';
       });
     });
-    for(int i=0;i<Val.length;++i){
-      if(Val[i]==' ')
-      {
+    for (int i = 0; i < Val.length; ++i) {
+      if (Val[i] == '^') {
         setState(() {
           filenm.add(temp);
-          temp='';
+          temp = '';
         });
       }
-      else{
+      else {
         setState(() {
-          temp=temp+Val[i];
+          temp = temp + Val[i];
         }
         );
       }
     }
   }
-  void getCurr()async{
-    setState(() async{
-      user =await FireBase.getCurrentUser();
+
+  void getCurr() async {
+    setState(() async {
+      user = await FireBase.getCurrentUser();
     });
     print(user);
-    if(user==null){
+    if (user == null) {
       setState(() {
-        user='OFFLINE';
+        user = 'OFFLINE';
       });
     }
   }
-  void firstStartCheck() async{
+
+  void firstStartCheck() async {
     String titles = await Titles.readFromFile();
-    if(titles==null) {
+    if (titles == null) {
       Titles.saveToFile('');
       NoteFile.saveToFile('', '');
     }
   }
 
   void initState() {
-
     super.initState();
     getCurr();
     getTitle();
     firstStartCheck();
-
   }
+
   Widget build(BuildContext context) {
     print(filenm);
     getCurr();
@@ -146,42 +147,41 @@ class _HomeState extends State<Home> {
         actions: <Widget>[
           IconButton(
             color: Colors.black,
-            icon:Icon(Icons.close),
-            onPressed: (){
+            icon: Icon(Icons.close),
+            onPressed: () {
               _auth.signOut();
               Navigator.pushNamed(context, '/Auth');
             },
           ),
           IconButton(
-              color:Colors.black,
-              icon:Icon(Icons.check_box),
-              onPressed:() async{
+              color: Colors.black,
+              icon: Icon(Icons.check_box),
+              onPressed: () async {
                 final user = await FireBase.getCurrentUser();
                 print(user);
-                if(user=='OFFLINE'){
+                if (user == 'OFFLINE') {
                   Navigator.popAndPushNamed(context, '/Auth');
-                }else
-                Navigator.pushNamed(context, '/check',arguments: {'user':user});
+                } else
+                  Navigator.pushNamed(
+                      context, '/check', arguments: {'user': user});
               }
           ),
         ],
         automaticallyImplyLeading: false,
         backgroundColor: Colors.yellow[600],
-        title:Text(user==null?'OFFLINE':'$user',
-          style:TextStyle(
+        title: Text(user == null ? 'OFFLINE' : '$user',
+          style: TextStyle(
             fontSize: 30,
-            color:Colors.black,
+            color: Colors.black,
 
           ),
         ),
-        centerTitle:true,
+        centerTitle: true,
       ),
-      body:ListView.builder(
+      body: ListView.builder(
 
-        itemCount:filenm.length,
-        itemBuilder:(context, index)
-        {
-
+        itemCount: filenm.length,
+        itemBuilder: (context, index) {
           return Padding(
             padding: const EdgeInsets.all(20.0),
             child: Container(
@@ -193,7 +193,7 @@ class _HomeState extends State<Home> {
               child: Dismissible(
                 background: Container(
                     color: Colors.red,
-                    child:Row(
+                    child: Row(
                       children: <Widget>[
                         Icon(
                           Icons.delete,
@@ -203,14 +203,12 @@ class _HomeState extends State<Home> {
                     )
                 ),
                 key: Key(filenm[index]),
-                onDismissed: (Direction) async{
-
+                onDismissed: (Direction) async {
                   deleteNote(filenm[index]);
                   NoteFile.deleteFile(filenm[index]);
-                  int f=0;
-                  if(user!='OFFLINE') {
-                    await for (var snapshot in _firestore.collection(user)
-                        .snapshots()) {
+                  int f = 0;
+                  if (user != 'OFFLINE') {
+                    await for (var snapshot in _firestore.collection(user).snapshots()) {
                       for (DocumentSnapshot message in snapshot.documents) {
                         if (message.data['Title'] == filenm[index]) {
                           message.reference.delete();
@@ -225,13 +223,13 @@ class _HomeState extends State<Home> {
                   }
                 },
                 child: InkWell(
-                  onTap:(){
-                    String flag='';
+                  onTap: () {
+                    String flag = '';
                     setState(() {
-                      flag=filenm[index];
+                      flag = filenm[index];
                     });
-                    Navigator.popAndPushNamed(context, '/disp',arguments:{
-                      'title':'$flag'
+                    Navigator.popAndPushNamed(context, '/disp', arguments: {
+                      'title': '$flag'
                     }
                     );
                   },
@@ -239,7 +237,7 @@ class _HomeState extends State<Home> {
                     child: Column(
                       children: <Widget>[
                         SizedBox(
-                          height:12,
+                          height: 12,
                         ),
                         Text(filenm[index],
                           style: TextStyle(
@@ -262,13 +260,13 @@ class _HomeState extends State<Home> {
       ),
 
       floatingActionButton: FloatingActionButton(
-        child:Icon(Icons.add,
+        child: Icon(Icons.add,
           color: Colors.black,
         ),
         backgroundColor: Colors.yellow[500],
-        onPressed:(){
-          Navigator.popAndPushNamed(context, '/disp',arguments:{
-            'title':'-',
+        onPressed: () {
+          Navigator.popAndPushNamed(context, '/disp', arguments: {
+            'title': '-',
           });
         },
       ),

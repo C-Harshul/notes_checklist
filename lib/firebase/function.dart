@@ -1,11 +1,12 @@
+
 import 'file:///C:/Users/Harshul%20C/AndroidStudioProjects/cloud_project/lib/Pages/disp.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 class FireBase {
- static Stream <FirebaseUser> get user {
+
+ static Stream<FirebaseUser>get user{
    return FirebaseAuth.instance.onAuthStateChanged;
  }
-
   static Future<String> getCurrentUser() async{
     try{
       final user=await FirebaseAuth.instance.currentUser();
@@ -43,4 +44,5 @@ class FireBase {
 
     Firestore.instance.collection('$currUser').document(ID).updateData({'Note':noteText});
   }
+
 }

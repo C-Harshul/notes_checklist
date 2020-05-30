@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloudproject/Pages/Home.dart';
 import 'package:cloudproject/Pages/disp.dart';
-
+import 'package:cloudproject/Pages/DispCorrected.dart';
 import 'package:cloudproject/Pages/Register.dart';
 import 'package:cloudproject/Pages/login.dart';
 import 'package:cloudproject/Pages/checklist.dart';
@@ -19,14 +19,14 @@ class NotesApp extends StatelessWidget {
       child: MaterialApp(
         home:CheckLogin(),
         routes:{
-          '/dispcorr':(context)=>Home(),
+          '/dispcorr':(context)=>Disp(),
+          '/OfflineHome':(context)=>Home(),
           '/login':(context)=>Login(),
           '/disp':(context)=>Display(),
           '/register':(context)=>Register(),
           '/Auth':(context)=>Authenticate(),
           '/check':(context)=>CheckList(),
           // '/':(context)=>Authenticate(),
-
         },
       ),
     );
@@ -37,11 +37,10 @@ class CheckLogin extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = Provider.of<FirebaseUser>(context);
     if(user!=null)
-      return Home();
+      return Disp();
     else
       return Authenticate();
   }
 }
-
 
 
